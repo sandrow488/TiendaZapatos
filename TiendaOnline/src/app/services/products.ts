@@ -36,4 +36,16 @@ export class ProductsService {
       }),
     );
   }
+
+  createProduct(formData: FormData): Observable<Product> {
+    return this.http.post<Product>('http://localhost:3000/api/products', formData);
+  }
+
+  updateProduct(id: string, formData: FormData): Observable<Product> {
+    return this.http.put<Product>(`http://localhost:3000/api/products/${id}`, formData);
+  }
+
+  deleteProduct(id: string): Observable<any> {
+    return this.http.delete<any>(`http://localhost:3000/api/products/${id}`);
+  }
 }
