@@ -22,15 +22,17 @@ export class Catalogo implements OnInit {
   readonly filteredProducts = computed(() => {
     const term = this.searchTerm().toLowerCase();
     const category = this.selectedCategory();
+    const currentProducts = this.products();
+    const validProducts = Array.isArray(currentProducts) ? currentProducts : [];
 
-    return this.products().filter((product) => {
+    return validProducts.filter((product) => {
       const matchesSearch =
         !term ||
         product.name.toLowerCase().includes(term) ||
         (product.brand?.toLowerCase().includes(term) ?? false);
 
       const matchesCategory =
-        category === 'Todas' || product.categories.name === category;
+        category === 'Todas' || product.categories?.name === category;
 
       return matchesSearch && matchesCategory;
     });
@@ -38,8 +40,9 @@ export class Catalogo implements OnInit {
 
   ngOnInit(): void {
     this.productsService.getProducts().subscribe({
-      next: (response) => {
-        this.products.set(response.data);
+      next: (products) => {
+        console.log('Productos recibidos:', products);
+        this.products.set(Array.isArray(products) ? products : []);
         this.isLoading.set(false);
       },
       error: () => this.isLoading.set(false),

@@ -26,8 +26,8 @@ export class DetalleProducto implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.productsService.getProducts()
-        .pipe(map(response => response.data.find(p => p.id === id) || null))
-        .subscribe(product => this.product.set(product));
+        .pipe(map((products) => (Array.isArray(products) ? products : []).find((p) => p.id === id) ?? null))
+        .subscribe((product) => this.product.set(product));
     }
   }
 
