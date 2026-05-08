@@ -1,10 +1,55 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { CurrencyPipe } from '@angular/common';
+import { RouterLink, Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { CartService } from '../../services/cart.service';
+import { OrdersService } from '../../services/orders';
 
 @Component({
   selector: 'app-carrito',
-  imports: [],
+  imports: [CurrencyPipe, RouterLink, FormsModule],
   templateUrl: './carrito.html',
   styleUrl: './carrito.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Carrito {}
+export class Carrito {
+  readonly cartService = inject(CartService);
+  private readonly ordersService = inject(OrdersService);
+  private readonly router = inject(Router);
+
+  readonly step = signal<'lista' | 'checkout'>('lista');
+  
+  // Checkout data
+  readonly address = signal('');
+  readonly notes = signal('');
+
+  goToCheckout(): void {
+    this.step.set('checkout');
+  }
+
+  placeOrder(): void {
+    const orderData = {
+      address: this.address(),
+      notes: this.notes(),
+      items: this.cartService.cartItems().map(item => ({
+        product_id: item.product.id,
+        size: item.size,
+        quantity: item.quantity,
+        price: item.product.price
+      })),
+      total: this.cartService.totalPrice()
+    };
+
+    this.ordersService.createOrder(orderData).subscribe({
+      next: () => {
+        this.cartService.clearCart();
+        alert('¡Pedido realizado con éxito!');
+        this.router.navigate(['/']);
+      },
+      error: (err) => {
+        console.error('Error al crear el pedido', err);
+        alert('Hubo un error al procesar tu pedido. Inténtalo de nuevo.');
+      }
+    });
+  }
+}

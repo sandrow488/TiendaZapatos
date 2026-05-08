@@ -1,1 +1,170 @@
-<p>carrito works!</p>
+<main class="max-w-7xl mx-auto px-6 py-12 lg:py-16">
+  <h1 class="text-4xl font-black text-neutral-950 mb-10 uppercase tracking-tight decoration-neutral-200 decoration-8 underline-offset-8">Tu Bolsa</h1>
+
+  @if (cartService.cartItems().length === 0) {
+    <!-- Estado Vacío -->
+    <div class="flex flex-col items-center justify-center py-24 bg-neutral-50 rounded-[2.5rem] border-2 border-dashed border-neutral-200">
+      <div class="bg-white p-8 rounded-full shadow-xl mb-8 animate-bounce">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-16 h-16 text-neutral-400">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+        </svg>
+      </div>
+      <h2 class="text-2xl font-black text-neutral-950 mb-3">Tu bolsa está vacía</h2>
+      <p class="text-neutral-500 mb-10 text-lg">Explora nuestras últimas novedades y encuentra tu par perfecto.</p>
+      <a 
+        routerLink="/catalogo"
+        class="bg-neutral-950 text-white px-10 py-4 rounded-full font-black uppercase tracking-widest hover:bg-neutral-800 transition-all shadow-2xl active:scale-95"
+      >
+        Ir al catálogo
+      </a>
+    </div>
+  } @else {
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-16 items-start">
+      
+      <!-- Columna Izquierda: Productos o Formulario -->
+      <div class="lg:col-span-2 flex flex-col gap-8">
+        
+        @if (step() === 'lista') {
+          <!-- Lista de Productos -->
+          <div class="flex flex-col gap-6">
+            @for (item of cartService.cartItems(); track $index) {
+              <div class="flex gap-8 bg-white p-6 rounded-[2rem] border border-neutral-100 shadow-sm hover:shadow-xl transition-all group relative overflow-hidden">
+                <div class="w-32 h-32 sm:w-44 sm:h-44 bg-neutral-100 rounded-2xl overflow-hidden shrink-0">
+                  <img [src]="item.product.image_url" [alt]="item.product.name" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                </div>
+                <div class="flex flex-col justify-between flex-1 py-2">
+                  <div class="flex justify-between items-start">
+                    <div>
+                      <span class="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400 block mb-1">{{ item.product.brand }}</span>
+                      <h3 class="text-xl font-black text-neutral-950 leading-tight">{{ item.product.name }}</h3>
+                      <p class="text-sm font-medium text-neutral-500 mt-1">{{ item.product.categories.name }}</p>
+                    </div>
+                    <button 
+                      (click)="cartService.removeItem($index)"
+                      class="p-3 text-neutral-300 hover:text-red-600 hover:bg-red-50 rounded-full transition-all"
+                      title="Eliminar producto"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div class="flex justify-between items-end">
+                    <div class="flex items-center gap-6">
+                      <div class="flex flex-col">
+                        <span class="text-[10px] font-black text-neutral-400 uppercase tracking-widest">Talla</span>
+                        <span class="text-sm font-bold text-neutral-950">{{ item.size }}</span>
+                      </div>
+                      <div class="flex flex-col">
+                        <span class="text-[10px] font-black text-neutral-400 uppercase tracking-widest">Cant.</span>
+                        <span class="text-sm font-bold text-neutral-950">{{ item.quantity }}</span>
+                      </div>
+                    </div>
+                    <p class="text-2xl font-black text-neutral-950 tabular-nums">
+                      {{ item.product.price * item.quantity | currency:'EUR' }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <!-- Checkout Form -->
+          <div class="bg-white p-10 rounded-[2.5rem] border border-neutral-100 shadow-2xl animate-in slide-in-from-left-8 duration-500">
+            <div class="flex items-center gap-6 mb-10">
+              <button (click)="step.set('lista')" class="p-4 hover:bg-neutral-100 rounded-2xl transition-all group">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-6 h-6 text-neutral-950 group-hover:-translate-x-1 transition-transform">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+                </svg>
+              </button>
+              <h2 class="text-3xl font-black text-neutral-950 uppercase tracking-tight">Detalles de Entrega</h2>
+            </div>
+
+            <div class="flex flex-col gap-8">
+              <div class="group">
+                <label class="block text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400 mb-3 group-focus-within:text-neutral-950 transition-colors">Dirección de envío</label>
+                <input 
+                  type="text" 
+                  [(ngModel)]="address"
+                  placeholder="Calle, número, código postal..."
+                  class="w-full bg-neutral-50 border-2 border-neutral-100 rounded-2xl px-8 py-5 focus:border-neutral-950 focus:bg-white outline-none transition-all font-bold text-lg shadow-inner"
+                >
+              </div>
+              <div class="group">
+                <label class="block text-[10px] font-black uppercase tracking-[0.2em] text-neutral-400 mb-3 group-focus-within:text-neutral-950 transition-colors">Observaciones / Instrucciones</label>
+                <textarea 
+                  [(ngModel)]="notes"
+                  placeholder="Ej: Dejar en portería o código del portal..."
+                  rows="4"
+                  class="w-full bg-neutral-50 border-2 border-neutral-100 rounded-2xl px-8 py-5 focus:border-neutral-950 focus:bg-white outline-none transition-all font-bold text-lg shadow-inner resize-none"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Resumen Lateral -->
+      <aside class="bg-neutral-50 p-10 rounded-[2.5rem] border border-neutral-200 sticky top-28 shadow-sm">
+        <h2 class="text-[10px] font-black uppercase tracking-[0.3em] text-neutral-400 mb-8 text-center">Resumen del pedido</h2>
+        
+        <div class="flex flex-col gap-5 mb-8">
+          <div class="flex justify-between items-center text-sm">
+            <span class="font-bold text-neutral-500 uppercase tracking-wider">Subtotal</span>
+            <span class="font-black text-neutral-950 text-lg">{{ cartService.totalPrice() | currency:'EUR' }}</span>
+          </div>
+          <div class="flex justify-between items-center text-sm">
+            <span class="font-bold text-neutral-500 uppercase tracking-wider">Envío</span>
+            <div class="flex items-center gap-2">
+              <span class="text-emerald-600 font-black uppercase tracking-tighter text-sm">Gratis</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="h-px bg-neutral-200 mb-8"></div>
+
+        <div class="flex justify-between items-end mb-10">
+          <span class="text-[10px] font-black text-neutral-950 uppercase tracking-widest pb-1">Total Final</span>
+          <span class="text-4xl font-black text-neutral-950 tracking-tighter">{{ cartService.totalPrice() | currency:'EUR' }}</span>
+        </div>
+
+        @if (step() === 'lista') {
+          <button 
+            (click)="goToCheckout()"
+            class="w-full bg-neutral-950 text-white py-6 rounded-[1.5rem] font-black uppercase tracking-[0.2em] text-sm hover:bg-neutral-800 transition-all shadow-2xl active:scale-95 group flex items-center justify-center gap-4"
+          >
+            Continuar pedido
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-5 h-5 group-hover:translate-x-1 transition-transform">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+            </svg>
+          </button>
+        } @else {
+          <button 
+            (click)="placeOrder()"
+            [disabled]="!address()"
+            class="w-full bg-emerald-600 text-white py-6 rounded-[1.5rem] font-black uppercase tracking-[0.2em] text-sm hover:bg-emerald-700 transition-all shadow-2xl disabled:bg-neutral-200 disabled:text-neutral-400 disabled:cursor-not-allowed active:scale-95 flex items-center justify-center gap-4"
+          >
+            Confirmar compra
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+            </svg>
+          </button>
+        }
+
+        <div class="mt-8 flex flex-col gap-4">
+          <div class="flex items-center gap-3 justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-neutral-400">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0V10.5m-2.25 1.35h13.5c.621 0 1.125.504 1.125 1.125v6.75c0 .621-.504 1.125-1.125 1.125H5.25a1.125 1.125 0 0 1-1.125-1.125v-6.75c0-.621.504-1.125 1.125-1.125Z" />
+            </svg>
+            <span class="text-[10px] font-black text-neutral-400 uppercase tracking-widest">Pago 100% seguro</span>
+          </div>
+          <div class="flex gap-2 justify-center opacity-30 grayscale hover:grayscale-0 transition-all duration-500">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" class="h-4">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" class="h-4">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="Paypal" class="h-4">
+          </div>
+        </div>
+      </aside>
+    </div>
+  }
+</main>

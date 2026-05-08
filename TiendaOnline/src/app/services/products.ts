@@ -19,13 +19,20 @@ export interface Product {
   categories: { name: string; slug: string };
 }
 
+export interface ProductsResponse {
+  data: Product[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class ProductsService {
   private readonly http = inject(HttpClient);
 
-  getProducts(): Observable<Product[]> {
-    return this.http.get<Product[]>('http://localhost:3000/api/products');
+  getProducts(): Observable<ProductsResponse> {
+    return this.http.get<ProductsResponse>('http://localhost:3000/api/products');
   }
 }

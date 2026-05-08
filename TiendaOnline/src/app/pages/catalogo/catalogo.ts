@@ -17,7 +17,7 @@ export class Catalogo implements OnInit {
   readonly selectedCategory = signal('Todas');
   readonly isLoading = signal(true);
 
-  readonly categoryOptions = ['Todas', 'Basketball', 'Lifestyle', 'Running', 'Training'];
+  readonly categoryOptions = ['Todas', 'Basketball', 'Football', 'Kids', 'Lifestyle', 'Running', 'Training'];
 
   readonly filteredProducts = computed(() => {
     const term = this.searchTerm().toLowerCase();
@@ -38,8 +38,8 @@ export class Catalogo implements OnInit {
 
   ngOnInit(): void {
     this.productsService.getProducts().subscribe({
-      next: (products) => {
-        this.products.set(products);
+      next: (response) => {
+        this.products.set(response.data);
         this.isLoading.set(false);
       },
       error: () => this.isLoading.set(false),
