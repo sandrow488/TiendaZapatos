@@ -106,13 +106,56 @@ export const updateOrderStatus = async (req, res) => {
     return res.status(400).json({ error: 'Estado no válido' })
   }
 
-  const { data, error } = await supabase.rpc('update_order_status', {
-    p_order_id: id,
-    p_status:   status
-  })
+  // maybeSingle() nunca lanza PGRST116; devuelve null si no hay fila
+  const { data: existing, error: findError } = await supabase
+    .from('orders')
+    .select('id')
+    .eq('id', id)
+    .maybeSingle()
 
-  if (error) return res.status(500).json({ error: error.message })
-  if (!data)  return res.status(404).json({ error: 'Pedido no encontrado' })
+  if (findError) {
+    console.error('[updateOrderStatus] find error:', findError)
+    return res.status(500).json({ error: findError.message })
+  }
+  if (!existing) return res.status(404).json({ error: 'Pedido no encontrado' })
 
-  res.json(data)
+  const { error: updateError } = await supabase
+    .from('orders')
+    .update({ status })
+    .eq('id', id)
+
+  if (updateError) {
+    console.error('[updateOrderStatus] update error:', updateError)
+    return res.status(500).json({ error: updateError.message })
+  }
+
+  res.json({ id, status })
+}
+
+export const cancelOrder = async (req, res) => {
+  const { id }    = req.params
+  const user_id   = req.user.id
+
+  // Solo cancela si el pedido pertenece al usuario y está en 'pending'
+  const { data: existing, error: findError } = await supabase
+    .from('orders')
+    .select('id, status, user_id')
+    .eq('id', id)
+    .eq('user_id', user_id)
+    .maybeSingle()
+
+  if (findError) return res.status(500).json({ error: findError.message })
+  if (!existing)  return res.status(404).json({ error: 'Pedido no encontrado' })
+  if (existing.status !== 'pending') {
+    return res.status(400).json({ error: 'Solo se pueden cancelar pedidos en estado pendiente' })
+  }
+
+  const { error: updateError } = await supabase
+    .from('orders')
+    .update({ status: 'cancelled' })
+    .eq('id', id)
+
+  if (updateError) return res.status(500).json({ error: updateError.message })
+
+  res.json({ id, status: 'cancelled' })
 }

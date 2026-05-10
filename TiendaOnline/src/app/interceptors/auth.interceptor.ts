@@ -6,7 +6,7 @@ import { catchError, throwError } from 'rxjs';
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
   
-  // Attach token
+  
   let authReq = req;
   if (typeof window !== 'undefined') {
     const token = localStorage.getItem('token');
@@ -21,7 +21,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
-      // If 401 Unauthorized, redirect to login
+      
       if (error.status === 401) {
         if (typeof window !== 'undefined') {
           localStorage.removeItem('token');

@@ -29,6 +29,10 @@ export interface Order {
   order_items: OrderItem[];
 }
 
+export interface AdminOrder extends Order {
+  user_email?: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -42,5 +46,13 @@ export class OrdersService {
 
   getMyOrders(): Observable<Order[]> {
     return this.http.get<Order[]>(`${this.API}/my-orders`);
+  }
+
+  getAllOrders(): Observable<AdminOrder[]> {
+    return this.http.get<AdminOrder[]>(this.API);
+  }
+
+  updateOrderStatus(orderId: string, status: string): Observable<any> {
+    return this.http.patch(`${this.API}/${orderId}/status`, { status });
   }
 }

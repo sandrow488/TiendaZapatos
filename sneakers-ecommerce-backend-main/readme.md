@@ -1,4 +1,4 @@
-# KICKstore — Backend API
+# PEGSTORE — Backend API
 
 API REST para el e-commerce de zapatillas desarrollado con Node.js + Express.
 
@@ -64,7 +64,7 @@ Reinicia Claude Desktop y verifica que el MCP está activo.
 
 Una vez el MCP esté activo, pide a Claude que cree el esquema:
 
-> "Crea el esquema completo de la base de datos para el e-commerce de zapatillas KICKstore con las tablas categories, products, orders y order_items. Incluye RLS, índices y datos de prueba."
+> "Crea el esquema completo de la base de datos para el e-commerce de zapatillas PEGSTORE con las tablas categories, products, orders y order_items. Incluye RLS, índices y datos de prueba."
 
 Claude ejecutará las migraciones automáticamente en tu proyecto de Supabase.
 

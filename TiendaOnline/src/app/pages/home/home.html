@@ -1,107 +1,48 @@
-<!-- ===== HERO ===== -->
-<section
-  class="min-h-[82vh] bg-neutral-950 flex items-center justify-center text-center px-6 py-24"
-  aria-labelledby="hero-heading"
->
-  <div class="max-w-3xl">
-    <p class="text-xs font-bold tracking-[0.25em] uppercase text-neutral-500 mb-5">
-      Nueva colección 2026
-    </p>
-    <h1
-      id="hero-heading"
-      class="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-white leading-[1.08] tracking-tight mb-6"
-    >
-      Las mejores zapatillas,
-      <span class="text-neutral-400">a tu medida</span>
-    </h1>
-    <p class="text-neutral-400 text-lg leading-relaxed mb-10 max-w-xl mx-auto">
-      Calzado deportivo y urbano de alta gama. Encuentra tu modelo perfecto
-      entre cientos de opciones.
-    </p>
-    <a
-      routerLink="/catalogo"
-      class="inline-block bg-white text-neutral-950 text-sm font-bold px-8 py-4 rounded-full hover:bg-neutral-200 active:scale-95 transition-all focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
-    >
-      Ver catálogo
-    </a>
-  </div>
-</section>
+<div class="bg-gray-50 min-h-screen">
+  
+  <header class="bg-white py-12 text-center border-b border-gray-200">
+    <div class="max-w-4xl mx-auto px-4">
+      <h1 class="text-4xl font-bold text-gray-900 mb-4">Bienvenido a PEGSTORE</h1>
+      <p class="text-xl text-gray-600 mb-8">Encuentra tus zapatillas favoritas al mejor precio.</p>
+      <a routerLink="/catalogo" class="bg-lime-400 text-gray-900 font-bold py-3 px-6 rounded hover:bg-lime-500">
+        Ver catálogo completo
+      </a>
+    </div>
+  </header>
 
-<!-- ===== PRODUCTOS DESTACADOS ===== -->
-<section
-  class="bg-neutral-100 py-20 px-6"
-  aria-labelledby="featured-heading"
->
-  <div class="max-w-6xl mx-auto">
-    <h2
-      id="featured-heading"
-      class="text-3xl font-extrabold text-neutral-900 text-center mb-12 tracking-tight"
-    >
-      Productos destacados
-    </h2>
-
-    <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 list-none p-0 m-0" role="list">
+  
+  <section class="max-w-6xl mx-auto px-4 py-12">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">Productos destacados</h2>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
       @for (product of featuredProducts; track product.name) {
-        <li>
-          <article class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-200">
-            <div class="relative">
-              <img
-                [src]="product.image"
-                [alt]="product.name"
-                width="300"
-                height="224"
-                class="w-full h-56 object-cover bg-neutral-200"
-              />
-              <span
-                class="absolute top-3 left-3 bg-neutral-950 text-white text-[10px] font-bold px-2.5 py-1 rounded-full tracking-widest uppercase"
-                aria-label="Categoría: {{ product.category }}"
-              >
-                {{ product.category }}
-              </span>
-            </div>
-            <div class="p-5 flex items-center justify-between">
-              <h3 class="font-semibold text-neutral-900 text-base">{{ product.name }}</h3>
-              <p class="font-extrabold text-neutral-900 text-lg shrink-0 ml-4">
-                <span class="sr-only">Precio:</span>{{ product.price }} €
-              </p>
-            </div>
-          </article>
-        </li>
+        <div class="bg-white border border-gray-200 rounded p-4">
+          <img [src]="product.image" [alt]="product.name" class="w-full h-48 object-cover bg-gray-100 mb-4 rounded">
+          <div class="text-sm text-lime-600 font-bold mb-1">{{ product.category }}</div>
+          <h3 class="font-bold text-gray-900 mb-2">{{ product.name }}</h3>
+          <p class="text-lg font-bold text-gray-900">{{ product.price }} €</p>
+        </div>
       }
-    </ul>
-  </div>
-</section>
+    </div>
+  </section>
 
-<!-- ===== CATEGORÍAS ===== -->
-<section
-  class="bg-neutral-900 py-20 px-6"
-  aria-labelledby="categories-heading"
->
-  <div class="max-w-6xl mx-auto">
-    <h2
-      id="categories-heading"
-      class="text-3xl font-extrabold text-white text-center mb-12 tracking-tight"
-    >
-      Comprar por categoría
-    </h2>
-
-    <ul class="grid grid-cols-2 sm:grid-cols-4 gap-4 list-none p-0 m-0" role="list">
-      @for (category of categories; track category) {
-        <li>
-          <a
-            routerLink="/catalogo"
-            class="flex items-center justify-center h-24 bg-neutral-800 hover:bg-neutral-700 active:bg-neutral-600 text-white font-semibold text-base rounded-2xl border border-neutral-700 hover:border-neutral-500 transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-            [attr.aria-label]="'Ver zapatillas de ' + category"
-          >
+  
+  <section class="bg-gray-100 py-12 border-t border-gray-200">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6 border-b border-gray-300 pb-2">Categorías</h2>
+      
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        @for (category of categories; track category) {
+          <a routerLink="/catalogo" class="bg-white border border-gray-300 rounded p-4 text-center text-lime-600 font-bold hover:bg-lime-100 hover:border-lime-400">
             {{ category }}
           </a>
-        </li>
-      }
-    </ul>
-  </div>
-</section>
+        }
+      </div>
+    </div>
+  </section>
 
-<!-- ===== FOOTER ===== -->
-<footer class="bg-neutral-950 py-8 px-6 text-center border-t border-neutral-800">
-  <p class="text-neutral-500 text-sm">&copy; 2026 KICKstore</p>
-</footer>
+  
+  <footer class="bg-gray-900 text-white text-center py-6 mt-12">
+    <p>&copy; 2026 PEGSTORE - Proyecto de Tienda Online</p>
+  </footer>
+</div>

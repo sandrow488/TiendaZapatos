@@ -27,8 +27,8 @@ export class ProductsService {
   private readonly http = inject(HttpClient);
 
   getProducts(): Observable<Product[]> {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return this.http.get<any>('http://localhost:3000/api/products').pipe(
+    
+    return this.http.get<any>('http://localhost:3000/api/products?limit=100').pipe(
       map((res): Product[] => {
         if (Array.isArray(res)) return res;
         if (res && Array.isArray(res['data'])) return res['data'];

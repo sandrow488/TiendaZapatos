@@ -19,7 +19,7 @@ export class Carrito {
 
   readonly step = signal<'lista' | 'checkout'>('lista');
   
-  // Checkout data
+  
   readonly address = signal('');
   readonly notes = signal('');
 
@@ -29,7 +29,7 @@ export class Carrito {
 
   placeOrder(): void {
     const orderData = {
-      address: this.address(),
+      shipping_address: this.address(),
       notes: this.notes(),
       items: this.cartService.cartItems().map(item => ({
         product_id: item.product.id,
@@ -44,7 +44,7 @@ export class Carrito {
       next: () => {
         this.cartService.clearCart();
         alert('¡Pedido realizado con éxito!');
-        this.router.navigate(['/']);
+        this.router.navigate(['/mis-pedidos']);
       },
       error: (err) => {
         console.error('Error al crear el pedido', err);

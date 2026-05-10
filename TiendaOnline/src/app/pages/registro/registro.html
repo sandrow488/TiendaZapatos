@@ -1,12 +1,12 @@
 <div class="min-h-screen bg-neutral-100 flex items-center justify-center px-4 py-16">
   <div class="w-full max-w-md">
 
-    <!-- Logo -->
+    
     <p class="text-center text-2xl font-extrabold tracking-widest uppercase text-neutral-950 mb-8">
-      KICKstore
+      PEGSTORE
     </p>
 
-    <!-- Card -->
+    
     <div class="bg-white rounded-2xl shadow-sm px-8 py-10">
       <h1 class="text-xl font-bold text-neutral-900 mb-7">Crear cuenta</h1>
 
@@ -16,7 +16,7 @@
         novalidate
         aria-label="Formulario de registro"
       >
-        <!-- Nombre completo -->
+        
         <div class="mb-5">
           <label
             for="reg-name"
@@ -37,7 +37,7 @@
           />
         </div>
 
-        <!-- Email -->
+        
         <div class="mb-5">
           <label
             for="reg-email"
@@ -58,7 +58,7 @@
           />
         </div>
 
-        <!-- Contraseña -->
+        
         <div class="mb-5">
           <label
             for="reg-password"
@@ -79,7 +79,7 @@
           />
         </div>
 
-        <!-- Confirmar contraseña -->
+        
         <div class="mb-7">
           <label
             for="reg-confirm"
@@ -100,7 +100,7 @@
           />
         </div>
 
-        <!-- Error de validación o API -->
+        
         @if (errorMessage()) {
           <div
             role="alert"
@@ -110,7 +110,7 @@
           </div>
         }
 
-        <!-- Botón submit -->
+        
         <button
           type="submit"
           [disabled]="isLoading()"
@@ -126,7 +126,7 @@
       </form>
     </div>
 
-    <!-- Enlace a login -->
+    
     <p class="text-center text-sm text-neutral-500 mt-6">
       ¿Ya tienes cuenta?
       <a

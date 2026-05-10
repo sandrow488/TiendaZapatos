@@ -113,7 +113,7 @@ export class AdminProductos implements OnInit {
     formData.append('stock', formValues.stock != null ? formValues.stock : 0);
     formData.append('brand', formValues.brand || '');
     
-    // Only append category_id if it's a valid string, avoiding "null" or "undefined"
+    
     if (formValues.category_id && formValues.category_id !== 'null' && formValues.category_id !== 'undefined') {
       formData.append('category_id', formValues.category_id);
     }

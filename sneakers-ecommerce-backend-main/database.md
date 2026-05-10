@@ -1,4 +1,4 @@
-# KICKstore — Esquema de base de datos
+# PEGSTORE — Esquema de base de datos
 
 Este documento contiene los prompts exactos para que Claude cree el esquema completo de la base de datos via MCP de Supabase.
 

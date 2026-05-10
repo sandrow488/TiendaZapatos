@@ -1,1 +1,120 @@
-<p>admin pedidos</p>
+<div class="bg-gray-50 min-h-screen py-8">
+  <div class="max-w-7xl mx-auto px-4">
+
+    
+    <header class="bg-gray-900 border-b border-gray-800 py-6 px-6 rounded-t-lg flex items-center justify-between">
+      <div>
+        <h1 class="text-2xl font-bold text-lime-400">Gestión de Pedidos</h1>
+        <p class="text-gray-400 text-sm mt-1">Actualiza el estado de los pedidos — el cliente lo verá reflejado al instante.</p>
+      </div>
+      <button
+        type="button"
+        (click)="loadOrders()"
+        class="text-sm text-gray-400 hover:text-lime-400 border border-gray-700 hover:border-lime-400 px-4 py-2 rounded-lg transition-colors">
+        Recargar
+      </button>
+    </header>
+
+    <main class="bg-white border border-gray-200 border-t-0 rounded-b-lg overflow-hidden">
+
+      
+      @if (isLoading()) {
+        <div class="flex items-center justify-center py-20 text-gray-400">
+          <div class="h-8 w-8 animate-spin rounded-full border-4 border-gray-200 border-t-lime-500 mr-3"></div>
+          Cargando pedidos...
+        </div>
+      }
+
+      
+      @else if (error()) {
+        <div class="m-6 rounded-lg bg-red-50 border border-red-200 px-5 py-4 text-sm text-red-700" role="alert">
+          {{ error() }}
+        </div>
+      }
+
+      
+      @else if (orders().length === 0) {
+        <div class="py-20 text-center text-gray-400">
+          <p class="text-lg font-semibold text-gray-600">No hay pedidos registrados</p>
+          <p class="text-sm mt-1">Los pedidos de los clientes aparecerán aquí.</p>
+        </div>
+      }
+
+      
+      @else {
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-100">
+            <thead class="bg-gray-50">
+              <tr>
+                <th scope="col" class="py-3.5 pl-6 pr-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Pedido</th>
+                <th scope="col" class="px-3 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Cliente</th>
+                <th scope="col" class="px-3 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Fecha</th>
+                <th scope="col" class="px-3 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Total</th>
+                <th scope="col" class="px-3 py-3.5 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Artículos</th>
+                <th scope="col" class="px-3 py-3.5 pl-3 pr-6 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Estado</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100 bg-white">
+              @for (order of orders(); track order.id) {
+                <tr class="hover:bg-gray-50 transition-colors">
+
+                  
+                  <td class="whitespace-nowrap py-4 pl-6 pr-3">
+                    <span class="font-mono text-sm font-semibold text-gray-900">
+                      #{{ order.id.split('-')[0].toUpperCase() }}
+                    </span>
+                  </td>
+
+                  
+                  <td class="px-3 py-4">
+                    @if (order.user_email) {
+                      <span class="text-sm text-gray-800">{{ order.user_email }}</span>
+                    } @else {
+                      <span class="font-mono text-xs text-gray-400">{{ order.user_id.split('-')[0] }}</span>
+                    }
+                  </td>
+
+                  
+                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                    {{ order.created_at | date:'dd/MM/yyyy HH:mm' }}
+                  </td>
+
+                  
+                  <td class="whitespace-nowrap px-3 py-4 text-sm font-semibold text-gray-900">
+                    {{ order.total_amount | currency:'EUR':'symbol':'1.2-2' }}
+                  </td>
+
+                  
+                  <td class="px-3 py-4 text-sm text-gray-500">
+                    {{ order.order_items?.length ?? 0 }} producto{{ (order.order_items?.length ?? 0) !== 1 ? 's' : '' }}
+                  </td>
+
+                  
+                  <td class="whitespace-nowrap px-3 py-4 pr-6">
+                    <select
+                      [class]="selectClass(order.status)"
+                      (change)="changeStatus(order.id, $event)"
+                      [attr.aria-label]="'Estado del pedido ' + order.id">
+                      @for (opt of statusOptions; track opt.value) {
+                        <option [value]="opt.value" [selected]="order.status === opt.value">
+                          {{ opt.label }}
+                        </option>
+                      }
+                    </select>
+                  </td>
+
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        
+        <div class="px-6 py-4 border-t border-gray-100 bg-gray-50 text-sm text-gray-500">
+          {{ orders().length }} pedido{{ orders().length !== 1 ? 's' : '' }} en total
+        </div>
+      }
+
+    </main>
+  </div>
+</div>
