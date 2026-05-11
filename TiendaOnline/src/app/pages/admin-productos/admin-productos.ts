@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CurrencyPipe } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ProductsService, Product } from '../../services/products';
 import { CategoriesService, Category } from '../../services/categories';
 
 @Component({
   selector: 'app-admin-productos',
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CurrencyPipe, ReactiveFormsModule],
   templateUrl: './admin-productos.html',
   styleUrl: './admin-productos.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -18,13 +18,13 @@ export class AdminProductos implements OnInit {
 
   products = signal<Product[]>([]);
   categories = signal<Category[]>([]);
-  
+
   productForm: FormGroup;
   isModalOpen = signal(false);
   isEditing = signal(false);
   currentProductId = signal<string | null>(null);
   selectedFile = signal<File | null>(null);
-  
+
   availableSizes = ['38', '39', '40', '41', '42', '43', '44', '45', '46'];
   selectedSizes = signal<string[]>([]);
 
@@ -109,16 +109,15 @@ export class AdminProductos implements OnInit {
 
     formData.append('name', formValues.name || '');
     formData.append('description', formValues.description || '');
-    formData.append('price', formValues.price != null ? formValues.price : 0);
-    formData.append('stock', formValues.stock != null ? formValues.stock : 0);
+    formData.append('price', String(formValues.price ?? 0));
+    formData.append('stock', String(formValues.stock ?? 0));
     formData.append('brand', formValues.brand || '');
-    
-    
+
     if (formValues.category_id && formValues.category_id !== 'null' && formValues.category_id !== 'undefined') {
       formData.append('category_id', formValues.category_id);
     }
-    
-    formData.append('is_active', formValues.is_active);
+
+    formData.append('is_active', String(formValues.is_active));
     formData.append('sizes', JSON.stringify(this.selectedSizes()));
 
     const file = this.selectedFile();

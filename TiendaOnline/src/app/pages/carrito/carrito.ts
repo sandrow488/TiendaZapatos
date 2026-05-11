@@ -1,13 +1,12 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
 import { CartService } from '../../services/cart.service';
 import { OrdersService } from '../../services/orders';
 
 @Component({
   selector: 'app-carrito',
-  imports: [CurrencyPipe, RouterLink, FormsModule],
+  imports: [CurrencyPipe, RouterLink],
   templateUrl: './carrito.html',
   styleUrl: './carrito.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

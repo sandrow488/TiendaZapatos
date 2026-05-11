@@ -11,7 +11,7 @@
         </button>
       </div>
     </div>
-    
+
     <div class="mt-8 flex flex-col">
       <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
         <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
@@ -30,38 +30,40 @@
                 </tr>
               </thead>
               <tbody class="divide-y divide-gray-200 bg-white">
-                <tr *ngFor="let product of products()">
-                  <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
-                    <div class="flex items-center">
-                      <div class="h-10 w-10 flex-shrink-0">
-                        <img class="h-10 w-10 rounded-full object-cover" [src]="product.image_url || 'https://via.placeholder.com/40'" alt="">
+                @for (product of products(); track product.id) {
+                  <tr>
+                    <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
+                      <div class="flex items-center">
+                        <div class="h-10 w-10 flex-shrink-0">
+                          <img class="h-10 w-10 rounded-full object-cover" [src]="product.image_url || 'https://via.placeholder.com/40'" [alt]="product.name">
+                        </div>
+                        <div class="ml-4">
+                          <div class="font-medium text-gray-900">{{ product.name }}</div>
+                          <div class="text-gray-500">{{ product.brand }}</div>
+                        </div>
                       </div>
-                      <div class="ml-4">
-                        <div class="font-medium text-gray-900">{{ product.name }}</div>
-                        <div class="text-gray-500">{{ product.brand }}</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    {{ product.categories?.name }}
-                  </td>
-                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    {{ product.price | currency:'EUR':'symbol' }}
-                  </td>
-                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    {{ product.stock }}
-                  </td>
-                  <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                    <span class="inline-flex rounded-full px-2 text-xs font-semibold leading-5"
-                          [ngClass]="product.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
-                      {{ product.is_active ? 'Activo' : 'Inactivo' }}
-                    </span>
-                  </td>
-                  <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                    <button (click)="openModal(product)" class="text-indigo-600 hover:text-indigo-900 mr-4">Editar</button>
-                    <button (click)="deleteProduct(product.id)" class="text-red-600 hover:text-red-900">Eliminar</button>
-                  </td>
-                </tr>
+                    </td>
+                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                      {{ product.categories?.name }}
+                    </td>
+                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                      {{ product.price | currency:'EUR':'symbol' }}
+                    </td>
+                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                      {{ product.stock }}
+                    </td>
+                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                      <span class="inline-flex rounded-full px-2 text-xs font-semibold leading-5"
+                            [class]="product.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
+                        {{ product.is_active ? 'Activo' : 'Inactivo' }}
+                      </span>
+                    </td>
+                    <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                      <button (click)="openModal(product)" class="text-indigo-600 hover:text-indigo-900 mr-4">Editar</button>
+                      <button (click)="deleteProduct(product.id)" class="text-red-600 hover:text-red-900">Eliminar</button>
+                    </td>
+                  </tr>
+                }
               </tbody>
             </table>
           </div>
@@ -71,125 +73,120 @@
   </div>
 </div>
 
+@if (isModalOpen()) {
+  <div class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
 
-<div *ngIf="isModalOpen()" class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-  <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+    <div class="fixed inset-0 z-10 overflow-y-auto">
+      <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+        <div class="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-2xl sm:p-6">
 
-  <div class="fixed inset-0 z-10 overflow-y-auto">
-    <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-      <div class="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-2xl sm:p-6">
-        
-        <div class="flex justify-between items-center mb-5">
-          <h3 class="text-2xl font-bold leading-6 text-gray-900" id="modal-title">
-            {{ isEditing() ? 'Editar Producto' : 'Añadir Nuevo Producto' }}
-          </h3>
-          <button (click)="closeModal()" class="text-gray-400 hover:text-gray-500">
-            <span class="sr-only">Cerrar</span>
-            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
+          <div class="flex justify-between items-center mb-5">
+            <h3 class="text-2xl font-bold leading-6 text-gray-900" id="modal-title">
+              {{ isEditing() ? 'Editar Producto' : 'Añadir Nuevo Producto' }}
+            </h3>
+            <button (click)="closeModal()" class="text-gray-400 hover:text-gray-500">
+              <span class="sr-only">Cerrar</span>
+              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="space-y-6">
+            <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
+
+              <div class="sm:col-span-2">
+                <label for="name" class="block text-sm font-medium text-gray-700">Nombre del Producto</label>
+                <div class="mt-1">
+                  <input type="text" id="name" formControlName="name" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm py-2 px-3 border" placeholder="Ej. Nike Air Max">
+                </div>
+              </div>
+
+              <div class="sm:col-span-2">
+                <label for="description" class="block text-sm font-medium text-gray-700">Descripción</label>
+                <div class="mt-1">
+                  <textarea id="description" formControlName="description" rows="3" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm py-2 px-3 border" placeholder="Detalles del producto..."></textarea>
+                </div>
+              </div>
+
+              <div>
+                <label for="category_id" class="block text-sm font-medium text-gray-700">Categoría</label>
+                <div class="mt-1">
+                  <select id="category_id" formControlName="category_id" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm py-2 px-3 border">
+                    <option value="">Selecciona una categoría</option>
+                    @for (cat of categories(); track cat.id) {
+                      <option [value]="cat.id">{{ cat.name }}</option>
+                    }
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label for="brand" class="block text-sm font-medium text-gray-700">Marca</label>
+                <div class="mt-1">
+                  <input type="text" id="brand" formControlName="brand" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm py-2 px-3 border" placeholder="Ej. Nike">
+                </div>
+              </div>
+
+              <div>
+                <label for="price" class="block text-sm font-medium text-gray-700">Precio (€)</label>
+                <div class="mt-1">
+                  <input type="number" id="price" formControlName="price" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm py-2 px-3 border">
+                </div>
+              </div>
+
+              <div>
+                <label for="stock" class="block text-sm font-medium text-gray-700">Stock</label>
+                <div class="mt-1">
+                  <input type="number" id="stock" formControlName="stock" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm py-2 px-3 border">
+                </div>
+              </div>
+
+              <div class="sm:col-span-2">
+                <label class="block text-sm font-medium text-gray-700">Imagen del Producto</label>
+                <div class="mt-1 flex items-center">
+                  <input type="file" (change)="onFileChange($event)" accept="image/*" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                </div>
+              </div>
+
+              <div class="sm:col-span-2">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Tallas Disponibles</label>
+                <div class="flex flex-wrap gap-2">
+                  @for (size of availableSizes; track size) {
+                    <button type="button"
+                            (click)="toggleSize(size)"
+                            [class]="selectedSizes().includes(size) ? 'px-3 py-1 border rounded-md text-sm font-medium hover:bg-indigo-500 hover:text-white transition-colors bg-indigo-600 text-white border-transparent' : 'px-3 py-1 border rounded-md text-sm font-medium hover:bg-indigo-500 hover:text-white transition-colors bg-white text-gray-700 border-gray-300'">
+                      {{ size }}
+                    </button>
+                  }
+                </div>
+              </div>
+
+              <div class="sm:col-span-2">
+                <div class="flex items-start">
+                  <div class="flex h-5 items-center">
+                    <input id="is_active" formControlName="is_active" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                  </div>
+                  <div class="ml-3 text-sm">
+                    <label for="is_active" class="font-medium text-gray-700">Producto Activo</label>
+                    <p class="text-gray-500">Si está desmarcado, el producto no será visible para los clientes.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
+              <button type="submit" [disabled]="productForm.invalid" class="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:col-start-2 sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                {{ isEditing() ? 'Actualizar Producto' : 'Guardar Producto' }}
+              </button>
+              <button type="button" (click)="closeModal()" class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:col-start-1 sm:mt-0 sm:text-sm">
+                Cancelar
+              </button>
+            </div>
+          </form>
         </div>
-
-        <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="space-y-6">
-          
-          <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
-            
-            <div class="sm:col-span-2">
-              <label for="name" class="block text-sm font-medium text-gray-700">Nombre del Producto</label>
-              <div class="mt-1">
-                <input type="text" id="name" formControlName="name" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm py-2 px-3 border" placeholder="Ej. Nike Air Max">
-              </div>
-            </div>
-
-            
-            <div class="sm:col-span-2">
-              <label for="description" class="block text-sm font-medium text-gray-700">Descripción</label>
-              <div class="mt-1">
-                <textarea id="description" formControlName="description" rows="3" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm py-2 px-3 border" placeholder="Detalles del producto..."></textarea>
-              </div>
-            </div>
-
-            
-            <div>
-              <label for="category_id" class="block text-sm font-medium text-gray-700">Categoría</label>
-              <div class="mt-1">
-                <select id="category_id" formControlName="category_id" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm py-2 px-3 border">
-                  <option value="">Selecciona una categoría</option>
-                  <option *ngFor="let cat of categories()" [value]="cat.id">{{ cat.name }}</option>
-                </select>
-              </div>
-            </div>
-
-            
-            <div>
-              <label for="brand" class="block text-sm font-medium text-gray-700">Marca</label>
-              <div class="mt-1">
-                <input type="text" id="brand" formControlName="brand" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm py-2 px-3 border" placeholder="Ej. Nike">
-              </div>
-            </div>
-
-            
-            <div>
-              <label for="price" class="block text-sm font-medium text-gray-700">Precio (€)</label>
-              <div class="mt-1">
-                <input type="number" id="price" formControlName="price" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm py-2 px-3 border">
-              </div>
-            </div>
-
-            
-            <div>
-              <label for="stock" class="block text-sm font-medium text-gray-700">Stock</label>
-              <div class="mt-1">
-                <input type="number" id="stock" formControlName="stock" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm py-2 px-3 border">
-              </div>
-            </div>
-
-            
-            <div class="sm:col-span-2">
-              <label class="block text-sm font-medium text-gray-700">Imagen del Producto</label>
-              <div class="mt-1 flex items-center">
-                <input type="file" (change)="onFileChange($event)" accept="image/*" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
-              </div>
-            </div>
-
-            
-            <div class="sm:col-span-2">
-              <label class="block text-sm font-medium text-gray-700 mb-2">Tallas Disponibles</label>
-              <div class="flex flex-wrap gap-2">
-                <button type="button" *ngFor="let size of availableSizes" 
-                        (click)="toggleSize(size)"
-                        [ngClass]="{'bg-indigo-600 text-white border-transparent': selectedSizes().includes(size), 'bg-white text-gray-700 border-gray-300': !selectedSizes().includes(size)}"
-                        class="px-3 py-1 border rounded-md text-sm font-medium hover:bg-indigo-500 hover:text-white transition-colors">
-                  {{ size }}
-                </button>
-              </div>
-            </div>
-
-            
-            <div class="sm:col-span-2">
-              <div class="flex items-start">
-                <div class="flex h-5 items-center">
-                  <input id="is_active" formControlName="is_active" type="checkbox" class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
-                </div>
-                <div class="ml-3 text-sm">
-                  <label for="is_active" class="font-medium text-gray-700">Producto Activo</label>
-                  <p class="text-gray-500">Si está desmarcado, el producto no será visible para los clientes.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
-            <button type="submit" [disabled]="productForm.invalid" class="inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:col-start-2 sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed">
-              {{ isEditing() ? 'Actualizar Producto' : 'Guardar Producto' }}
-            </button>
-            <button type="button" (click)="closeModal()" class="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:col-start-1 sm:mt-0 sm:text-sm">
-              Cancelar
-            </button>
-          </div>
-        </form>
       </div>
     </div>
   </div>
-</div>
+}
